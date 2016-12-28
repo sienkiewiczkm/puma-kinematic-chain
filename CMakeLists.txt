@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0)
-project(framework-application-template)
+project(puma-chain-simulation)
 
 set(CMAKE_BUILD_TYPE Debug)
 
@@ -16,6 +16,8 @@ include_directories(
 
 add_library(${PROJECT_NAME_LIB}
     source/Application.cpp
+    source/PumaConfigurationWindow.cpp
+    source/PumaModel.cpp
 )
 
 add_executable(${PROJECT_NAME}

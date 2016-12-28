@@ -27,22 +27,15 @@ void Application::onCreate()
 {
     ImGuiApplication::onCreate();
 
-    _phongEffect = std::make_shared<fw::TexturedPhongEffect>();
-    _phongEffect->create();
-
     _universalPhongEffect = std::make_shared<fw::UniversalPhongEffect>();
 
-    _cube = fw::createBox({1.0, 1.0, 1.0});
     _grid = std::make_shared<fw::Grid>(
         glm::ivec2{32, 32},
         glm::vec2{0.5f, 0.5f}
     );
 
-    _frameMarker = std::make_shared<fw::FrameMarker>();
-
-    _testTexture = fw::loadTextureFromFile(
-        fw::getFrameworkResourcePath("textures/checker-base.png")
-    );
+    _pumaModel = std::make_shared<PumaModel>();
+    _configurationWindow = std::make_shared<PumaConfigurationWindow>();
 
     _camera.rotate(fw::pi()/4, -3.0*fw::pi()/4);
     _camera.setDist(3.0f);
@@ -60,6 +53,12 @@ void Application::onUpdate(
 )
 {
     ImGuiApplication::onUpdate(deltaTime);
+
+    _configurationWindow->updateInterface();
+    _pumaModel->setConfiguration(
+        _configurationWindow->getConfiguration()
+    );
+
     ImGui::ShowTestWindow();
 }
 
@@ -69,16 +68,14 @@ void Application::onRender()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_DEPTH_TEST);
 
-    _phongEffect->begin();
-    _phongEffect->setProjectionMatrix(_projectionMatrix);
-    _phongEffect->setViewMatrix(_camera.getViewMatrix());
-    _phongEffect->setModelMatrix({});
-    _phongEffect->setTexture(_testTexture);
-    _cube->render();
+    _universalPhongEffect->begin();
+    _universalPhongEffect->setProjectionMatrix(_projectionMatrix);
+    _universalPhongEffect->setViewMatrix(_camera.getViewMatrix());
+    _universalPhongEffect->setModelMatrix({});
     _grid->render();
-    _phongEffect->end();
+    _universalPhongEffect->end();
 
-    for (const auto& chunk: _frameMarker->getGeometryChunks())
+    for (const auto& chunk: _pumaModel->getGeometryChunks())
     {
         _universalPhongEffect->setLightDirection({-1, 1, 0});
         _universalPhongEffect->setSolidColor(
