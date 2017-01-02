@@ -55,8 +55,13 @@ void Application::onUpdate(
     ImGuiApplication::onUpdate(deltaTime);
 
     _configurationWindow->updateInterface();
+
     _pumaModel->setConfiguration(
         _configurationWindow->getConfiguration()
+    );
+
+    _pumaModel->setArms(
+        _configurationWindow->getArmsProperties()
     );
 
     ImGui::ShowTestWindow();
