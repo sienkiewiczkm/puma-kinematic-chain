@@ -75,4 +75,14 @@ void PumaConfigurationWindow::updateInterface()
     ImGui::End();
 }
 
+glm::vec3 PumaConfigurationWindow::getEffectorPosition() const
+{
+    return _effectorPosition;
+}
+
+glm::quat PumaConfigurationWindow::getEffectorOrientation() const
+{
+    return _effectorOrientation;
+}
+
 }
