@@ -13,6 +13,7 @@
 #include "fw/UniversalPhongEffect.hpp"
 #include "fw/Vertices.hpp"
 
+#include "PumaCalculator.hpp"
 #include "PumaConfigurationWindow.hpp"
 #include "PumaModel.hpp"
 
@@ -46,6 +47,7 @@ private:
     std::shared_ptr<fw::Grid> _grid;
     std::shared_ptr<PumaModel> _pumaModel;
 
+    std::shared_ptr<PumaCalculator> _pumaCalculator;
     std::shared_ptr<PumaConfigurationWindow> _configurationWindow;
 
     fw::OrbitingCamera _camera;

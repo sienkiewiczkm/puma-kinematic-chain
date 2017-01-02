@@ -34,8 +34,11 @@ void Application::onCreate()
         glm::vec2{0.5f, 0.5f}
     );
 
-    _pumaModel = std::make_shared<PumaModel>();
-    _configurationWindow = std::make_shared<PumaConfigurationWindow>();
+    _pumaCalculator = std::make_shared<PumaCalculator>();
+    _pumaModel = std::make_shared<PumaModel>(_pumaCalculator);
+    _configurationWindow = std::make_shared<PumaConfigurationWindow>(
+        _pumaCalculator
+    );
 
     _camera.rotate(fw::pi()/4, -3.0*fw::pi()/4);
     _camera.setDist(3.0f);
@@ -55,14 +58,6 @@ void Application::onUpdate(
     ImGuiApplication::onUpdate(deltaTime);
 
     _configurationWindow->updateInterface();
-
-    _pumaModel->setConfiguration(
-        _configurationWindow->getConfiguration()
-    );
-
-    _pumaModel->setArms(
-        _configurationWindow->getArmsProperties()
-    );
 
     ImGui::ShowTestWindow();
 }

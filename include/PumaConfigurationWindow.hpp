@@ -1,5 +1,8 @@
 #pragma once
 
+#include "glm/glm.hpp"
+#include "glm/gtc/quaternion.hpp"
+
 #include "PumaModel.hpp"
 
 namespace application
@@ -8,19 +11,17 @@ namespace application
 class PumaConfigurationWindow
 {
 public:
-    PumaConfigurationWindow();
+    PumaConfigurationWindow(const std::shared_ptr<PumaCalculator>& calculator);
 
-    void setConfiguration(const PumaConfiguration& configuration);
-    const PumaConfiguration& getConfiguration() const;
-
-    void setArmsProperties(const std::array<float, 3>& armsProperties);
-    const std::array<float, 3>& getArmsProperties() const;
+    glm::vec3 getEffectorPosition() const;
+    glm::quat getEffectorOrientation() const;
 
     void updateInterface();
 
 private:
-    std::array<float, 3> _armsProperties;
-    PumaConfiguration _configuration;
+    std::shared_ptr<PumaCalculator> _calculator;
+    glm::vec3 _effectorPosition;
+    glm::quat _effectorOrientation;
 };
 
 }

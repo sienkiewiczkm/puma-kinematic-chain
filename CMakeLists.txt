@@ -16,6 +16,7 @@ include_directories(
 
 add_library(${PROJECT_NAME_LIB}
     source/Application.cpp
+    source/PumaCalculator.cpp
     source/PumaConfigurationWindow.cpp
     source/PumaModel.cpp
 )
