@@ -1,6 +1,7 @@
 #include "PumaConfigurationWindow.hpp"
 #include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"
+#include "PumaIKSolver.hpp"
 
 namespace application
 {
@@ -69,6 +70,7 @@ void PumaConfigurationWindow::updateInterface()
         if (recalculateInverseKinematics)
         {
             ImGui::Text("IK recalculation.");
+            _calculator->solveIK(_effectorPosition, _effectorOrientation);
         }
     }
 

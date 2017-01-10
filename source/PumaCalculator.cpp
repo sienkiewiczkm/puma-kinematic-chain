@@ -1,14 +1,11 @@
 #include "PumaCalculator.hpp"
+
 #include "glm/gtc/matrix_transform.hpp"
+
+#include "PumaIKSolver.hpp"
 
 namespace application
 {
-
-PumaConfiguration::PumaConfiguration():
-    alpha{},
-    extension{1.0f}
-{
-}
 
 PumaCalculator::PumaCalculator()
 {
@@ -68,7 +65,11 @@ void PumaCalculator::updateMatrices()
 
 bool PumaCalculator::solveIK(glm::vec3 position, glm::quat orientation)
 {
-    return false;
+    PumaIKSolver solver;
+    solver.setArmsProperties(_armLenghts);
+    auto result = solver.solve(position, orientation, _configuration);
+    _debugPoints = solver.getLastHelperPoints();
+    return result;
 }
 
 void PumaCalculator::setArmsProperties(const std::array<float, 3>& arms)
@@ -125,6 +126,25 @@ const glm::mat4& PumaCalculator::getFourthArmMatrix() const
 const glm::mat4& PumaCalculator::getEffectorMatrix() const
 {
     return _effectorMtx;
+}
+
+const std::vector<glm::vec3>& PumaCalculator::getDebugPoints() const
+{
+    return _debugPoints;
+}
+
+std::vector<glm::vec3> PumaCalculator::getRotationPoints() const
+{
+    std::vector<glm::vec3> rotationPoints;
+    glm::vec4 zero{0.0f, 0.0f, 0.0f, 1.0f};
+
+    rotationPoints.push_back(getFirstArmMatrix() * zero);
+    rotationPoints.push_back(getSecondArmMatrix() * zero);
+    rotationPoints.push_back(getThirdArmMatrix() * zero);
+    rotationPoints.push_back(getFourthArmMatrix() * zero);
+    rotationPoints.push_back(getEffectorMatrix() * zero);
+
+    return rotationPoints;
 }
 
 }

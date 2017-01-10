@@ -46,6 +46,7 @@ private:
     std::shared_ptr<fw::UniversalPhongEffect> _universalPhongEffect;
     std::shared_ptr<fw::FrameMarker> _frameMarker;
     std::shared_ptr<fw::Grid> _grid;
+    std::shared_ptr<fw::Mesh<fw::VertexNormalTexCoords>> _sphere;
 
     std::shared_ptr<PumaCalculator> _pumaCalculator;
     std::shared_ptr<PumaConfigurationWindow> _configurationWindow;

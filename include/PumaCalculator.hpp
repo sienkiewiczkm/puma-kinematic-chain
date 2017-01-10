@@ -1,19 +1,15 @@
 #pragma once
 
 #include <array>
+#include <vector>
+
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
+#include "PumaConfiguration.hpp"
+
 namespace application
 {
-
-struct PumaConfiguration
-{
-    PumaConfiguration();
-
-    float alpha[5];
-    float extension;
-};
 
 class PumaCalculator
 {
@@ -38,6 +34,9 @@ public:
     const glm::mat4& getFourthArmMatrix() const;
     const glm::mat4& getEffectorMatrix() const;
 
+    const std::vector<glm::vec3>& getDebugPoints() const;
+    std::vector<glm::vec3> getRotationPoints() const;
+
 private:
     std::array<float, 3> _armLenghts;
     PumaConfiguration _configuration;
@@ -45,6 +44,8 @@ private:
     glm::mat4 _transform;
     glm::mat4 _firstArmMtx, _secondArmMtx, _thirdArmMtx, _fourthArmMtx;
     glm::mat4 _effectorMtx;
+
+    std::vector<glm::vec3> _debugPoints;
 };
 
 }

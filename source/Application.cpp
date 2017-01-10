@@ -35,6 +35,9 @@ void Application::onCreate()
     );
 
     _frameMarker = std::make_shared<fw::FrameMarker>();
+    _sphere = std::make_shared<fw::Mesh<fw::VertexNormalTexCoords>>(
+        fw::createSphere(1.0f, 16, 16)
+    );
 
     _pumaCalculator = std::make_shared<PumaCalculator>();
     _pumaModel = std::make_shared<PumaModel>(_pumaCalculator);
@@ -106,6 +109,13 @@ void Application::onRender()
         std::make_move_iterator(std::end(frameChunks))
     );
 
+    for (const auto& debugPoint: _pumaCalculator->getDebugPoints())
+    {
+        auto modelMatrix = glm::translate(glm::mat4{}, debugPoint)
+            * glm::scale(glm::mat4{}, glm::vec3{0.1f, 0.1f, 0.1f});
+        sceneChunks.push_back({_sphere, nullptr, modelMatrix});
+    }
+
     for (const auto& chunk: sceneChunks)
     {
         _universalPhongEffect->setLightDirection({-1, 1, 0});
@@ -118,7 +128,7 @@ void Application::onRender()
         }
         else
         {
-            //_universalPhongEffect->applyDefaultMaterial();
+            _universalPhongEffect->setSolidColor({1.0f, 0.0f, 1.0f});
         }
 
         _universalPhongEffect->begin();
