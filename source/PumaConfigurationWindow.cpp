@@ -6,10 +6,27 @@
 namespace application
 {
 
+PumaInverseKinematicsInput::PumaInverseKinematicsInput():
+    effectorPosition{},
+    effectorOrientation{}
+{
+}
+
+PumaInverseKinematicsInput::PumaInverseKinematicsInput(
+    glm::vec3 effectorPosition,
+    glm::quat effectorOrientation
+):
+    effectorPosition{effectorPosition},
+    effectorOrientation{effectorOrientation}
+{
+}
+
 PumaConfigurationWindow::PumaConfigurationWindow(
     const std::shared_ptr<PumaCalculator>& calculator
 ):
-    _calculator{calculator}
+    _calculator{calculator},
+    _startInputAvailable{false},
+    _endInputAvailable{false}
 {
 }
 
@@ -23,6 +40,7 @@ void PumaConfigurationWindow::updateInterface()
 
     auto armsProperties = _calculator->getArmsProperties();
     auto configuration = _calculator->getConfiguration();
+    bool recalculateInverseKinematics = false;
 
     if (ImGui::CollapsingHeader("PUMA Properties"))
     {
@@ -46,7 +64,6 @@ void PumaConfigurationWindow::updateInterface()
 
     if (ImGui::CollapsingHeader("Inverse Kinematics"))
     {
-        bool recalculateInverseKinematics = false;
 
         if (ImGui::DragFloat3(
             "Effector position",
@@ -66,12 +83,71 @@ void PumaConfigurationWindow::updateInterface()
             recalculateInverseKinematics = true;
             _effectorOrientation = glm::normalize(_effectorOrientation);
         }
+    }
 
-        if (recalculateInverseKinematics)
+    if (ImGui::CollapsingHeader("Animation"))
+    {
+
+        if (ImGui::Button("Set current IK problem as start"))
         {
-            ImGui::Text("IK recalculation.");
-            _calculator->solveIK(_effectorPosition, _effectorOrientation);
+            _startInput = PumaInverseKinematicsInput{
+                _effectorPosition,
+                _effectorOrientation
+            };
+
+            _startInputAvailable = true;
         }
+
+        if (!_startInputAvailable)
+        {
+            ImGui::SameLine();
+            ImGui::TextColored(
+                ImVec4(255, 0, 0, 255),
+                "Start IK inavailable."
+            );
+        }
+        else if(ImGui::Button("Load##start"))
+        {
+            _effectorPosition = _startInput.effectorPosition;
+            _effectorOrientation = _startInput.effectorOrientation;
+            recalculateInverseKinematics = true;
+        }
+
+        if (ImGui::Button("Set current IK problem as end"))
+        {
+            _endInput = PumaInverseKinematicsInput{
+                _effectorPosition,
+                _effectorOrientation
+            };
+
+            _endInputAvailable = true;
+        }
+
+        if (!_endInputAvailable)
+        {
+            ImGui::SameLine();
+            ImGui::TextColored(
+                ImVec4(255, 0, 0, 255),
+                "End IK inavailable."
+            );
+        }
+        else if(ImGui::Button("Load##end"))
+        {
+            _effectorPosition = _endInput.effectorPosition;
+            _effectorOrientation = _endInput.effectorOrientation;
+            recalculateInverseKinematics = true;
+        }
+
+        if (_startInputAvailable
+            && _endInputAvailable
+            && ImGui::Button("Go to play mode"))
+        {
+        }
+    }
+
+    if (recalculateInverseKinematics)
+    {
+        _calculator->solveIK(_effectorPosition, _effectorOrientation);
     }
 
     ImGui::End();

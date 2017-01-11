@@ -3,18 +3,29 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "fw/Common.hpp"
+#include "CommonMath.hpp"
 
 namespace application
 {
 
 PumaIKSolver::PumaIKSolver():
-    _arms{}
+    _arms{},
+    _lastConfigurationAvailable{false},
+    _lastPumaConfiguration{}
 {
 }
 
 void PumaIKSolver::setArmsProperties(const std::array<float, 3>& arms)
 {
     _arms = arms;
+}
+
+void PumaIKSolver::setLastPumaConfiguration(
+    const PumaConfiguration& pumaConfiguration
+)
+{
+    _lastConfigurationAvailable = true;
+    _lastPumaConfiguration = pumaConfiguration;
 }
 
 bool PumaIKSolver::solve(
@@ -46,13 +57,47 @@ bool PumaIKSolver::solve(
     glm::vec3 p31 = p4 + y4 * _arms[1];
     glm::vec3 p32 = p4 - y4 * _arms[1];
 
-    configuration =
+    auto configurationCandidatePlus =
         buildConfiguration(p1, p2, p31, p4, p5, planeNormal, x5, y5);
+
+    auto configurationCandidateMinus =
+        buildConfiguration(p1, p2, p32, p4, p5, planeNormal, x5, y5);
+
+    if (!_lastConfigurationAvailable)
+    {
+        // simplification, just force choosing plus option
+        _lastPumaConfiguration = configurationCandidatePlus;
+        _lastConfigurationAvailable = true;
+    }
+
+    auto plusCandidateDistance = scoreConfigurationDistance(
+        _lastPumaConfiguration, configurationCandidatePlus
+    );
+
+    auto minusCandidateDistance = scoreConfigurationDistance(
+        _lastPumaConfiguration, configurationCandidateMinus
+    );
+
+    glm::vec3 chosenPoint{};
+
+    if (plusCandidateDistance <= minusCandidateDistance)
+    {
+        configuration = configurationCandidatePlus;
+        chosenPoint = p31;
+    }
+    else
+    {
+        configuration = configurationCandidateMinus;
+        chosenPoint = p32;
+    }
+
+    _lastPumaConfiguration = configuration;
+    _lastConfigurationAvailable = true;
 
     _helperPoints.clear();
     _helperPoints.push_back(p1);
     _helperPoints.push_back(p2);
-    _helperPoints.push_back(p31);
+    _helperPoints.push_back(chosenPoint);
     _helperPoints.push_back(p4);
     _helperPoints.push_back(p5);
 
@@ -153,6 +198,22 @@ float PumaIKSolver::angle(glm::vec3 v, glm::vec3 w, glm::vec3 planeNormal) const
     }
 
     return angle;
+}
+
+float PumaIKSolver::scoreConfigurationDistance(
+    const PumaConfiguration &lhs,
+    const PumaConfiguration &rhs
+) const
+{
+    float distance =
+        fabs(normalizeRadians(lhs.alpha[0]) - normalizeRadians(rhs.alpha[0]))
+        + fabs(normalizeRadians(lhs.alpha[1]) - normalizeRadians(rhs.alpha[1]))
+        + fabs(normalizeRadians(lhs.alpha[2]) - normalizeRadians(rhs.alpha[2]))
+        + fabs(normalizeRadians(lhs.alpha[3]) - normalizeRadians(rhs.alpha[3]))
+        + fabs(normalizeRadians(lhs.alpha[4]) - normalizeRadians(rhs.alpha[4]))
+        + fabs(lhs.extension - rhs.extension);
+
+    return distance;
 }
 
 }

@@ -1,8 +1,5 @@
 #include "PumaCalculator.hpp"
-
 #include "glm/gtc/matrix_transform.hpp"
-
-#include "PumaIKSolver.hpp"
 
 namespace application
 {
@@ -65,10 +62,9 @@ void PumaCalculator::updateMatrices()
 
 bool PumaCalculator::solveIK(glm::vec3 position, glm::quat orientation)
 {
-    PumaIKSolver solver;
-    solver.setArmsProperties(_armLenghts);
-    auto result = solver.solve(position, orientation, _configuration);
-    _debugPoints = solver.getLastHelperPoints();
+    _ikSolver.setArmsProperties(_armLenghts);
+    auto result = _ikSolver.solve(position, orientation, _configuration);
+    _debugPoints = _ikSolver.getLastHelperPoints();
     return result;
 }
 

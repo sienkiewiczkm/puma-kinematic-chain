@@ -7,6 +7,7 @@
 #include "glm/gtc/quaternion.hpp"
 
 #include "PumaConfiguration.hpp"
+#include "PumaIKSolver.hpp"
 
 namespace application
 {
@@ -40,6 +41,7 @@ public:
 private:
     std::array<float, 3> _armLenghts;
     PumaConfiguration _configuration;
+    PumaIKSolver _ikSolver;
 
     glm::mat4 _transform;
     glm::mat4 _firstArmMtx, _secondArmMtx, _thirdArmMtx, _fourthArmMtx;

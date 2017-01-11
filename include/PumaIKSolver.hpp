@@ -16,6 +16,7 @@ public:
     PumaIKSolver();
 
     void setArmsProperties(const std::array<float, 3>& arms);
+    void setLastPumaConfiguration(const PumaConfiguration& pumaConfiguration);
     bool solve(
         glm::vec3 position,
         glm::quat orientation,
@@ -23,7 +24,6 @@ public:
     );
 
     std::vector<glm::vec3> getLastHelperPoints() const;
-
 
 private:
     glm::vec3 solveY4(glm::vec3 planeNormal, glm::vec3 x5) const;
@@ -41,8 +41,16 @@ private:
 
     float angle(glm::vec3 v, glm::vec3 w, glm::vec3 planeNormal) const;
 
+    float scoreConfigurationDistance(
+        const PumaConfiguration &lhs,
+        const PumaConfiguration &rhs
+    ) const;
+
     std::vector<glm::vec3> _helperPoints;
     std::array<float, 3> _arms;
+
+    bool _lastConfigurationAvailable;
+    PumaConfiguration _lastPumaConfiguration;
 };
 
 }
