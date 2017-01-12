@@ -18,7 +18,8 @@ namespace application
 
 Application::Application():
     _enableCameraRotations{false},
-    _cameraRotationSensitivity{0.2, 0.2}
+    _cameraRotationSensitivity{0.2, 0.2},
+    _displayLastIkPoints{false}
 {
 }
 
@@ -90,6 +91,21 @@ void Application::onUpdate(
 )
 {
     ImGuiApplication::onUpdate(deltaTime);
+
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("View"))
+        {
+            ImGui::MenuItem(
+                "Display last IK solution",
+                "",
+                &_displayLastIkPoints
+            );
+
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 
     if (!_inAnimationMode)
     {
@@ -174,7 +190,19 @@ void Application::render(const PumaModel& puma)
         std::make_move_iterator(std::end(frameChunks))
     );
 
-    for (const auto& debugPoint: puma.getCalculator()->getDebugPoints())
+    if (!_inAnimationMode && _displayLastIkPoints)
+    {
+        auto material = std::make_shared<fw::Material>();
+        material->setBaseAlbedoColor({1.0f, 1.0f, 0.0f, 1.0f});
+        for (const auto& debugPoint: puma.getCalculator()->getDebugPoints())
+        {
+            auto modelMatrix = glm::translate(glm::mat4{}, debugPoint)
+                * glm::scale(glm::mat4{}, glm::vec3{0.1f, 0.1f, 0.1f});
+            sceneChunks.push_back({_sphere, material, modelMatrix});
+        }
+    }
+
+    for (const auto& debugPoint: puma.getCalculator()->getRotationPoints())
     {
         auto modelMatrix = glm::translate(glm::mat4{}, debugPoint)
             * glm::scale(glm::mat4{}, glm::vec3{0.1f, 0.1f, 0.1f});

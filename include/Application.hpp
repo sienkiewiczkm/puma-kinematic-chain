@@ -71,6 +71,8 @@ private:
     std::shared_ptr<PumaAnimator> _leftAnimator;
     std::shared_ptr<PumaAnimator> _rightAnimator;
 
+    bool _displayLastIkPoints;
+
     fw::OrbitingCamera _camera;
     glm::mat4 _projectionMatrix;
     bool _enableCameraRotations;
