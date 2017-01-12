@@ -87,6 +87,7 @@ PumaConfiguration PumaCalculator::getConfiguration() const
 void PumaCalculator::setConfiguration(const PumaConfiguration& configuration)
 {
     _configuration = configuration;
+    _ikSolver.setLastPumaConfiguration(_configuration);
     updateMatrices();
 }
 
