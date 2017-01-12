@@ -24,6 +24,11 @@ PumaModel::PumaModel(const std::shared_ptr<PumaCalculator>& pumaCalculator):
     _greenMaterial->setBaseAlbedoColor({0.0f, 1.0f, 0.0f, 1.0f});
 }
 
+const std::shared_ptr<PumaCalculator>& PumaModel::getCalculator() const
+{
+    return _calculator;
+}
+
 std::vector<fw::GeometryChunk> PumaModel::getGeometryChunks() const
 {
     std::vector<fw::GeometryChunk> chunks{};

@@ -51,6 +51,8 @@ protected:
     void showAnimationInferface();
     void updateProjectionMatrix();
 
+    void render(const PumaModel& puma);
+
 private:
     std::shared_ptr<fw::UniversalPhongEffect> _universalPhongEffect;
     std::shared_ptr<fw::FrameMarker> _frameMarker;
@@ -58,11 +60,16 @@ private:
     std::shared_ptr<fw::Mesh<fw::VertexNormalTexCoords>> _sphere;
 
     std::shared_ptr<PumaCalculator> _pumaCalculator;
-    std::shared_ptr<PumaConfigurationWindow> _configurationWindow;
+    std::shared_ptr<PumaCalculator> _alternativePumaCalculator;
+
     std::shared_ptr<PumaModel> _pumaModel;
+    std::shared_ptr<PumaModel> _alternativePumaModel;
+
+    std::shared_ptr<PumaConfigurationWindow> _configurationWindow;
 
     bool _inAnimationMode;
     std::shared_ptr<PumaAnimator> _leftAnimator;
+    std::shared_ptr<PumaAnimator> _rightAnimator;
 
     fw::OrbitingCamera _camera;
     glm::mat4 _projectionMatrix;

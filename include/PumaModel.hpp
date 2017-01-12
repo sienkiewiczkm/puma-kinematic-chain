@@ -18,6 +18,7 @@ class PumaModel
 {
 public:
     PumaModel(const std::shared_ptr<PumaCalculator>& calculator);
+    const std::shared_ptr<PumaCalculator>& getCalculator() const;
     std::vector<fw::GeometryChunk> getGeometryChunks() const;
 
 private:

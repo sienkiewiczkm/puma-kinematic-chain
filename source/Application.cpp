@@ -59,6 +59,11 @@ void Application::onCreate()
         _pumaCalculator
     );
 
+    _alternativePumaCalculator = std::make_shared<PumaCalculator>();
+    _alternativePumaModel = std::make_shared<PumaModel>(
+        _alternativePumaCalculator
+    );
+
     _configurationWindow->setListener(shared_from_this());
 
     _camera.rotate(fw::pi()/4, -3.0*fw::pi()/4);
@@ -95,8 +100,34 @@ void Application::onUpdate(
 
 void Application::onRender()
 {
+    auto resolution = getFramebufferSize();
+
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    if (!_inAnimationMode)
+    {
+        glViewport(0, 0, resolution.x, resolution.y);
+        updateProjectionMatrix();
+        render(*_pumaModel.get());
+    }
+    else
+    {
+        auto aspectRatio = static_cast<float>(resolution.x/2) / resolution.y;
+        _projectionMatrix = glm::perspective(45.0f, aspectRatio, 0.5f, 100.0f);
+
+        glViewport(0, 0, resolution.x/2, resolution.y);
+        render(*_pumaModel.get());
+
+        glViewport(resolution.x/2, 0, resolution.x/2, resolution.y);
+        render(*_pumaModel.get());
+    }
+
+    ImGuiApplication::onRender();
+}
+
+void Application::render(const PumaModel& puma)
+{
     glEnable(GL_DEPTH_TEST);
 
     _universalPhongEffect->begin();
@@ -108,7 +139,7 @@ void Application::onRender()
 
     std::vector<fw::GeometryChunk> sceneChunks;
 
-    auto pumaChunks = _pumaModel->getGeometryChunks();
+    auto pumaChunks = puma.getGeometryChunks();
     sceneChunks.insert(
         std::end(sceneChunks),
         std::make_move_iterator(std::begin(pumaChunks)),
@@ -135,7 +166,7 @@ void Application::onRender()
         std::make_move_iterator(std::end(frameChunks))
     );
 
-    for (const auto& debugPoint: _pumaCalculator->getDebugPoints())
+    for (const auto& debugPoint: puma.getCalculator()->getDebugPoints())
     {
         auto modelMatrix = glm::translate(glm::mat4{}, debugPoint)
             * glm::scale(glm::mat4{}, glm::vec3{0.1f, 0.1f, 0.1f});
@@ -164,8 +195,6 @@ void Application::onRender()
         chunk.getMesh()->render();
         _universalPhongEffect->end();
     }
-
-    ImGuiApplication::onRender();
 }
 
 bool Application::onMouseButton(int button, int action, int mods)
