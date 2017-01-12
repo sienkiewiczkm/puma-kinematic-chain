@@ -182,7 +182,7 @@ glm::vec3 PumaConfigurationWindow::getEffectorPosition() const
 
 glm::quat PumaConfigurationWindow::getEffectorOrientation() const
 {
-    return _effectorOrientation;
+    return glm::normalize(_effectorOrientation);
 }
 
 }

@@ -189,15 +189,15 @@ float PumaIKSolver::angle(glm::vec3 v, glm::vec3 w, glm::vec3 planeNormal) const
     v = glm::normalize(v);
     w = glm::normalize(w);
 
-    float cosa = glm::dot(v, w);
-    float angle = acos(cosa);
+    float cosa = glm::clamp(glm::dot(v, w), -1.0f, 1.0f);
+    float angleVectors = acos(cosa);
     glm::vec3 crossProduct = glm::cross(v, w);
     if (glm::dot(planeNormal, crossProduct) < 0)
     {
-        angle = -angle;
+        angleVectors = -angleVectors;
     }
 
-    return angle;
+    return angleVectors;
 }
 
 float PumaIKSolver::scoreConfigurationDistance(
