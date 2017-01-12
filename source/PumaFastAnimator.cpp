@@ -27,6 +27,7 @@ void PumaFastAnimator::onStart()
     );
 
     _endConfiguration = _target->getConfiguration();
+    _target->setConfiguration(_startConfiguration);
 }
 
 void PumaFastAnimator::onStep()

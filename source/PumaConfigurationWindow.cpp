@@ -57,9 +57,37 @@ void PumaConfigurationWindow::updateInterface()
 
     if (ImGui::CollapsingHeader("PUMA Properties"))
     {
-        ImGui::DragFloat("Arm 1 length", &armsProperties[0], 0.01f);
-        ImGui::DragFloat("Arm 3 length", &armsProperties[1], 0.01f);
-        ImGui::DragFloat("Arm 4 length", &armsProperties[2], 0.01f);
+        bool arm1set =
+            ImGui::DragFloat(
+                "Arm 1 length",
+                &armsProperties[0],
+                0.01f,
+                0.001f,
+                50.0f
+            );
+
+        bool arm2set =
+            ImGui::DragFloat(
+                "Arm 3 length",
+                &armsProperties[1],
+                0.01f,
+                0.001f,
+                50.0f
+            );
+
+        bool arm4set =
+            ImGui::DragFloat(
+                "Arm 4 length",
+                &armsProperties[2],
+                0.01f,
+                0.001f,
+                50.0f
+            );
+
+        if (arm1set || arm2set || arm4set)
+        {
+            recalculateInverseKinematics = true;
+        }
     }
 
     if (ImGui::CollapsingHeader("Forward Kinematics"))
