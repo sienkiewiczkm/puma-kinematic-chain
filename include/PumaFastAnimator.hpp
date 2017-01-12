@@ -16,7 +16,6 @@ protected:
     virtual void onStart();
     virtual void onStep();
 
-    PumaConfiguration _startConfiguration;
     PumaConfiguration _endConfiguration;
 };
 

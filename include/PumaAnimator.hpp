@@ -18,7 +18,8 @@ public:
 
     void startAnimation(
         const PumaInverseKinematicsInput& start,
-        const PumaInverseKinematicsInput& end
+        const PumaInverseKinematicsInput& end,
+        const PumaConfiguration& startConfiguration
     );
 
     void play();
@@ -38,6 +39,7 @@ protected:
     std::shared_ptr<PumaCalculator> _target;
     PumaInverseKinematicsInput _start;
     PumaInverseKinematicsInput _end;
+    PumaConfiguration _startConfiguration;
 };
 
 }

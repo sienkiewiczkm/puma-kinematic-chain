@@ -38,12 +38,19 @@ void PumaAnimator::setTarget(const std::shared_ptr<PumaCalculator>& target)
 
 void PumaAnimator::startAnimation(
     const PumaInverseKinematicsInput& start,
-    const PumaInverseKinematicsInput& end
+    const PumaInverseKinematicsInput& end,
+    const PumaConfiguration& startConfiguration
 )
 {
     _start = start;
     _end = end;
+    _startConfiguration = startConfiguration;
     _animationElapsed = 0.0;
+
+    if (_target != nullptr)
+    {
+        _target->setConfiguration(_startConfiguration);
+    }
 
     onStart();
 }
@@ -61,6 +68,13 @@ void PumaAnimator::pause()
 void PumaAnimator::restart()
 {
     _animationElapsed = 0.0;
+
+    if (_target != nullptr)
+    {
+        _target->setConfiguration(_startConfiguration);
+    }
+
+    onStart();
 }
 
 void PumaAnimator::update(double deltaSeconds)

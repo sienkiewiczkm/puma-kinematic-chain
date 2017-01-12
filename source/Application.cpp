@@ -33,13 +33,16 @@ void Application::onAnimationRequest(
 {
     _inAnimationMode = true;
 
+    _pumaCalculator->solveIK(start.effectorPosition, start.effectorOrientation);
+    auto startConfiguration = _pumaCalculator->getConfiguration();
+
     _leftAnimator = std::make_shared<PumaFastAnimator>();
     _leftAnimator->setTarget(_pumaCalculator);
-    _leftAnimator->startAnimation(start, end);
+    _leftAnimator->startAnimation(start, end, startConfiguration);
 
     _rightAnimator = std::make_shared<PumaStraightLineAnimator>();
     _rightAnimator->setTarget(_alternativePumaCalculator);
-    _rightAnimator->startAnimation(start, end);
+    _rightAnimator->startAnimation(start, end, startConfiguration);
 }
 
 void Application::onCreate()
