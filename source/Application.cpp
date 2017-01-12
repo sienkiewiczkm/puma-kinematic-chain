@@ -10,6 +10,9 @@
 #include "fw/Resources.hpp"
 #include "fw/TextureUtils.hpp"
 
+#include "PumaFastAnimator.hpp"
+#include "PumaStraightLineAnimator.hpp"
+
 namespace application
 {
 
@@ -21,6 +24,17 @@ Application::Application():
 
 Application::~Application()
 {
+}
+
+void Application::onAnimationRequest(
+    const PumaInverseKinematicsInput &start,
+    const PumaInverseKinematicsInput &end
+)
+{
+    _inAnimationMode = true;
+    _leftAnimator = std::make_shared<PumaStraightLineAnimator>();
+    _leftAnimator->setTarget(_pumaCalculator);
+    _leftAnimator->startAnimation(start, end);
 }
 
 void Application::onCreate()
@@ -45,6 +59,8 @@ void Application::onCreate()
         _pumaCalculator
     );
 
+    _configurationWindow->setListener(shared_from_this());
+
     _camera.rotate(fw::pi()/4, -3.0*fw::pi()/4);
     _camera.setDist(3.0f);
 
@@ -62,7 +78,17 @@ void Application::onUpdate(
 {
     ImGuiApplication::onUpdate(deltaTime);
 
-    _configurationWindow->updateInterface();
+    if (!_inAnimationMode)
+    {
+        _configurationWindow->updateInterface();
+    }
+    else
+    {
+        std::chrono::duration<double> deltaSeconds{deltaTime};
+        _leftAnimator->update(deltaSeconds.count());
+
+        showAnimationInferface();
+    }
 
     ImGui::ShowTestWindow();
 }
@@ -190,6 +216,52 @@ bool Application::onResize()
 {
     updateProjectionMatrix();
     return true;
+}
+
+void Application::showAnimationInferface()
+{
+    if (!ImGui::Begin("Animation"))
+    {
+        ImGui::End();
+        return;
+    }
+
+    if (ImGui::Button("Play"))
+    {
+        _leftAnimator->play();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Pause"))
+    {
+        _leftAnimator->pause();
+    }
+
+    ImGui::SameLine();
+
+    if (ImGui::Button("Restart"))
+    {
+        _leftAnimator->restart();
+    }
+
+    float animationDuration = static_cast<float>(_leftAnimator->getDuration());
+    ImGui::SliderFloat("Duration", &animationDuration, 0.01f, 100.0f);
+    _leftAnimator->setDuration(animationDuration);
+
+    float fraction = static_cast<float>(
+        _leftAnimator->getElapsed() / _leftAnimator->getDuration()
+    );
+
+    ImGui::ProgressBar(fraction, ImVec2(-1, 0), "Animation progress");
+
+    if (ImGui::Button("Quit animation mode"))
+    {
+        _inAnimationMode = false;
+        _leftAnimator = nullptr;
+    }
+
+    ImGui::End();
 }
 
 void Application::updateProjectionMatrix()

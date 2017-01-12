@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "glm/gtc/type_ptr.hpp"
 #include "PumaIKSolver.hpp"
+#include "PumaFastAnimator.hpp"
 
 namespace application
 {
@@ -28,6 +29,13 @@ PumaConfigurationWindow::PumaConfigurationWindow(
     _startInputAvailable{false},
     _endInputAvailable{false}
 {
+}
+
+void PumaConfigurationWindow::setListener(
+    const std::shared_ptr<IPumaConfigurationEventListener>& listener
+)
+{
+    _listener = listener;
 }
 
 void PumaConfigurationWindow::updateInterface()
@@ -139,9 +147,19 @@ void PumaConfigurationWindow::updateInterface()
         }
 
         if (_startInputAvailable
-            && _endInputAvailable
-            && ImGui::Button("Go to play mode"))
+            && _endInputAvailable)
         {
+            if (ImGui::Button("Play low-cost animation"))
+            {
+                if (_listener != nullptr)
+                {
+                    _listener->onAnimationRequest(_startInput, _endInput);
+                }
+            }
+
+            if (ImGui::Button("Go to side-by side play mode"))
+            {
+            }
         }
     }
 

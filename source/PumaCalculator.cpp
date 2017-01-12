@@ -65,6 +65,7 @@ bool PumaCalculator::solveIK(glm::vec3 position, glm::quat orientation)
     _ikSolver.setArmsProperties(_armLenghts);
     auto result = _ikSolver.solve(position, orientation, _configuration);
     _debugPoints = _ikSolver.getLastHelperPoints();
+    updateMatrices();
     return result;
 }
 

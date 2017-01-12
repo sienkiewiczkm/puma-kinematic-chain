@@ -13,6 +13,7 @@
 #include "fw/UniversalPhongEffect.hpp"
 #include "fw/Vertices.hpp"
 
+#include "PumaAnimator.hpp"
 #include "PumaCalculator.hpp"
 #include "PumaConfigurationWindow.hpp"
 #include "PumaModel.hpp"
@@ -21,11 +22,18 @@ namespace application
 {
 
 class Application:
-    public fw::ImGuiApplication
+    public fw::ImGuiApplication,
+    public IPumaConfigurationEventListener,
+    public std::enable_shared_from_this<Application>
 {
 public:
     Application();
     virtual ~Application();
+
+    void onAnimationRequest(
+        const PumaInverseKinematicsInput &start,
+        const PumaInverseKinematicsInput &end
+    ) override;
 
 protected:
     virtual void onCreate() override;
@@ -40,6 +48,7 @@ protected:
     virtual bool onScroll(double xoffset, double yoffset) override;
     virtual bool onResize() override;
 
+    void showAnimationInferface();
     void updateProjectionMatrix();
 
 private:
@@ -51,6 +60,9 @@ private:
     std::shared_ptr<PumaCalculator> _pumaCalculator;
     std::shared_ptr<PumaConfigurationWindow> _configurationWindow;
     std::shared_ptr<PumaModel> _pumaModel;
+
+    bool _inAnimationMode;
+    std::shared_ptr<PumaAnimator> _leftAnimator;
 
     fw::OrbitingCamera _camera;
     glm::mat4 _projectionMatrix;

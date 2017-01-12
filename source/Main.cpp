@@ -9,10 +9,11 @@ int main(int argc, const char* argv[])
     fw::initialize(argc, argv);
     LOG(INFO) << "Starting application";
 
-    application::Application app;
-    app.create();
-    app.run();
-    app.destroy();
+    auto app = std::make_shared<application::Application>();
+    app->create();
+    app->run();
+    app->destroy();
+    app = nullptr;
 
     return EXIT_SUCCESS;
 }

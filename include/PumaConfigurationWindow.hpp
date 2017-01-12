@@ -3,21 +3,21 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/quaternion.hpp"
 
+#include "PumaConfiguration.hpp"
 #include "PumaModel.hpp"
 
 namespace application
 {
 
-struct PumaInverseKinematicsInput
+class IPumaConfigurationEventListener
 {
-    PumaInverseKinematicsInput();
-    PumaInverseKinematicsInput(
-        glm::vec3 effectorPosition,
-        glm::quat effectorOrientation
-    );
+public:
+    virtual ~IPumaConfigurationEventListener() = default;
 
-    glm::vec3 effectorPosition;
-    glm::quat effectorOrientation;
+    virtual void onAnimationRequest(
+        const PumaInverseKinematicsInput &start,
+        const PumaInverseKinematicsInput &end
+    ) = 0;
 };
 
 class PumaConfigurationWindow
@@ -25,12 +25,17 @@ class PumaConfigurationWindow
 public:
     PumaConfigurationWindow(const std::shared_ptr<PumaCalculator>& calculator);
 
+    void setListener(
+        const std::shared_ptr<IPumaConfigurationEventListener>& listener
+    );
+
     glm::vec3 getEffectorPosition() const;
     glm::quat getEffectorOrientation() const;
 
     void updateInterface();
 
 private:
+    std::shared_ptr<IPumaConfigurationEventListener> _listener;
     std::shared_ptr<PumaCalculator> _calculator;
     glm::vec3 _effectorPosition;
     glm::quat _effectorOrientation;
