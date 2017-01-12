@@ -100,8 +100,6 @@ void Application::onUpdate(
 
         showAnimationInferface();
     }
-
-    ImGui::ShowTestWindow();
 }
 
 void Application::onRender()
@@ -140,6 +138,7 @@ void Application::render(const PumaModel& puma)
     _universalPhongEffect->setProjectionMatrix(_projectionMatrix);
     _universalPhongEffect->setViewMatrix(_camera.getViewMatrix());
     _universalPhongEffect->setModelMatrix({});
+    _universalPhongEffect->setSolidColor(glm::vec4{0.35f, 0.35f, 0.35f, 1.0f});
     _grid->render();
     _universalPhongEffect->end();
 

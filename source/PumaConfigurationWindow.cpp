@@ -114,11 +114,15 @@ void PumaConfigurationWindow::updateInterface()
                 "Start IK inavailable."
             );
         }
-        else if(ImGui::Button("Load##start"))
+        else
         {
-            _effectorPosition = _startInput.effectorPosition;
-            _effectorOrientation = _startInput.effectorOrientation;
-            recalculateInverseKinematics = true;
+            ImGui::SameLine();
+            if (ImGui::Button("Load##start"))
+            {
+                _effectorPosition = _startInput.effectorPosition;
+                _effectorOrientation = _startInput.effectorOrientation;
+                recalculateInverseKinematics = true;
+            }
         }
 
         if (ImGui::Button("Set current IK problem as end"))
@@ -139,26 +143,26 @@ void PumaConfigurationWindow::updateInterface()
                 "End IK inavailable."
             );
         }
-        else if(ImGui::Button("Load##end"))
+        else
         {
-            _effectorPosition = _endInput.effectorPosition;
-            _effectorOrientation = _endInput.effectorOrientation;
-            recalculateInverseKinematics = true;
+            ImGui::SameLine();
+            if (ImGui::Button("Load##end"))
+            {
+                _effectorPosition = _endInput.effectorPosition;
+                _effectorOrientation = _endInput.effectorOrientation;
+                recalculateInverseKinematics = true;
+            }
         }
 
         if (_startInputAvailable
             && _endInputAvailable)
         {
-            if (ImGui::Button("Play low-cost animation"))
+            if (ImGui::Button("Go to side-by side play mode"))
             {
                 if (_listener != nullptr)
                 {
                     _listener->onAnimationRequest(_startInput, _endInput);
                 }
-            }
-
-            if (ImGui::Button("Go to side-by side play mode"))
-            {
             }
         }
     }
