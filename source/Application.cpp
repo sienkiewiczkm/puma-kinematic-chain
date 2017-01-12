@@ -137,11 +137,11 @@ void Application::render(const PumaModel& puma)
 {
     glEnable(GL_DEPTH_TEST);
 
+    _universalPhongEffect->setSolidColor(glm::vec4{0.75f, 0.75f, 0.75f, 1.0f});
     _universalPhongEffect->begin();
     _universalPhongEffect->setProjectionMatrix(_projectionMatrix);
     _universalPhongEffect->setViewMatrix(_camera.getViewMatrix());
     _universalPhongEffect->setModelMatrix({});
-    _universalPhongEffect->setSolidColor(glm::vec4{0.35f, 0.35f, 0.35f, 1.0f});
     _grid->render();
     _universalPhongEffect->end();
 
