@@ -29,6 +29,11 @@ PumaConfigurationWindow::PumaConfigurationWindow(
     _startInputAvailable{false},
     _endInputAvailable{false}
 {
+    _calculator->updateMatrices();
+    auto effectorStart =
+        _calculator->getEffectorMatrix() * glm::vec4{0, 0, 0, 1.0};
+    _effectorPosition = effectorStart;
+    _calculator->solveIK(_effectorPosition, _effectorOrientation);
 }
 
 void PumaConfigurationWindow::setListener(

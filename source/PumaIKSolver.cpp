@@ -65,8 +65,8 @@ bool PumaIKSolver::solve(
 
     if (!_lastConfigurationAvailable)
     {
-        // simplification, just force choosing plus option
-        _lastPumaConfiguration = configurationCandidatePlus;
+        // simplification, just force choosing minus option
+        _lastPumaConfiguration = configurationCandidateMinus;
         _lastConfigurationAvailable = true;
     }
 
