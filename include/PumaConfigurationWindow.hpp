@@ -23,7 +23,10 @@ public:
 class PumaConfigurationWindow
 {
 public:
-    PumaConfigurationWindow(const std::shared_ptr<PumaCalculator>& calculator);
+    PumaConfigurationWindow(
+        const std::shared_ptr<PumaCalculator>& calculator,
+        const std::shared_ptr<PumaCalculator>& secondCalculator
+    );
 
     void setListener(
         const std::shared_ptr<IPumaConfigurationEventListener>& listener
@@ -37,6 +40,7 @@ public:
 private:
     std::shared_ptr<IPumaConfigurationEventListener> _listener;
     std::shared_ptr<PumaCalculator> _calculator;
+    std::shared_ptr<PumaCalculator> _secondCalculator;
     glm::vec3 _effectorPosition;
     glm::quat _effectorOrientation;
 

@@ -64,12 +64,14 @@ void Application::onCreate()
 
     _pumaCalculator = std::make_shared<PumaCalculator>();
     _pumaModel = std::make_shared<PumaModel>(_pumaCalculator);
-    _configurationWindow = std::make_shared<PumaConfigurationWindow>(
-        _pumaCalculator
-    );
 
     _alternativePumaCalculator = std::make_shared<PumaCalculator>();
     _alternativePumaModel = std::make_shared<PumaModel>(
+        _alternativePumaCalculator
+    );
+
+    _configurationWindow = std::make_shared<PumaConfigurationWindow>(
+        _pumaCalculator,
         _alternativePumaCalculator
     );
 

@@ -23,9 +23,11 @@ PumaInverseKinematicsInput::PumaInverseKinematicsInput(
 }
 
 PumaConfigurationWindow::PumaConfigurationWindow(
-    const std::shared_ptr<PumaCalculator>& calculator
+    const std::shared_ptr<PumaCalculator>& calculator,
+    const std::shared_ptr<PumaCalculator>& secondCalculator
 ):
     _calculator{calculator},
+    _secondCalculator{secondCalculator},
     _startInputAvailable{false},
     _endInputAvailable{false}
 {
@@ -101,6 +103,8 @@ void PumaConfigurationWindow::updateInterface()
     }
 
     _calculator->setArmsProperties(armsProperties);
+    _secondCalculator->setArmsProperties(armsProperties);
+
     _calculator->setConfiguration(configuration);
 
     if (ImGui::CollapsingHeader("Inverse Kinematics"))
