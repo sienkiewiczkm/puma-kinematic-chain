@@ -43,6 +43,7 @@ private:
     std::shared_ptr<PumaCalculator> _secondCalculator;
     glm::vec3 _effectorPosition;
     glm::quat _effectorOrientation;
+    glm::vec3 _eulerAngles;
 
     PumaInverseKinematicsInput _currentInput;
 

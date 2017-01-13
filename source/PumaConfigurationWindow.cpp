@@ -128,6 +128,13 @@ void PumaConfigurationWindow::updateInterface()
             recalculateInverseKinematics = true;
             _effectorOrientation = glm::normalize(_effectorOrientation);
         }
+
+        ImGui::DragFloat3("Euler angles", glm::value_ptr(_eulerAngles), 0.01f);
+        if (ImGui::Button("Convert to quaternion"))
+        {
+            recalculateInverseKinematics = true;
+            _effectorOrientation = glm::quat{glm::radians(_eulerAngles)};
+        }
     }
 
     if (ImGui::CollapsingHeader("Animation"))
