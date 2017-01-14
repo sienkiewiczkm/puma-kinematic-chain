@@ -6,7 +6,7 @@ namespace application
 PumaAnimator::PumaAnimator():
     _isPlaying{false},
     _animationElapsed{0.0},
-    _animationDuration{1.0}
+    _animationDuration{5.0}
 {
 }
 

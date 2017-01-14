@@ -200,17 +200,27 @@ float PumaIKSolver::angle(glm::vec3 v, glm::vec3 w, glm::vec3 planeNormal) const
     return angleVectors;
 }
 
+static float angleDistance(float a, float b)
+{
+    a = normalizeRadians(a);
+    b = normalizeRadians(b);
+    auto pi2 = 2.0f * fw::pif();
+    auto lengthDirect = std::abs(b - a);
+    auto lengthAround = std::min(a, b) + (pi2 - std::max(a, b));
+    return std::min(lengthDirect, lengthAround);
+}
+
 float PumaIKSolver::scoreConfigurationDistance(
     const PumaConfiguration &lhs,
     const PumaConfiguration &rhs
 ) const
 {
     float distance =
-        fabs(normalizeRadians(lhs.alpha[0]) - normalizeRadians(rhs.alpha[0]))
-        + fabs(normalizeRadians(lhs.alpha[1]) - normalizeRadians(rhs.alpha[1]))
-        + fabs(normalizeRadians(lhs.alpha[2]) - normalizeRadians(rhs.alpha[2]))
-        + fabs(normalizeRadians(lhs.alpha[3]) - normalizeRadians(rhs.alpha[3]))
-        + fabs(normalizeRadians(lhs.alpha[4]) - normalizeRadians(rhs.alpha[4]))
+        angleDistance(lhs.alpha[0], rhs.alpha[0])
+        + angleDistance(lhs.alpha[1], rhs.alpha[1])
+        + angleDistance(lhs.alpha[2], rhs.alpha[2])
+        + angleDistance(lhs.alpha[3], rhs.alpha[3])
+        + angleDistance(lhs.alpha[4], rhs.alpha[4])
         + fabs(lhs.extension - rhs.extension);
 
     return distance;
